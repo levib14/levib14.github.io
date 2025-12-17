@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Wrapped 2024</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400">
+    
+    <div id="inputScreen" class="min-h-screen p-6 flex items-center justify-center">
+        <div class="max-w-2xl w-full bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-gray-800 mb-2">Campus Wrapped 2024</h1>
+                <p class="text-gray-600">Enter your top 5 groups & time spent</p>
+            </div>
+
+            <div class="space-y-4 mb-8" id="chatInputs"></div>
+
+            <button onclick="generateWrapped()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-lg font-bold text-lg hover:shadow-lg transform hover:scale-105 transition-all">
+                Generate My Wrapped ✨
+            </button>
+        </div>
+    </div>
+
+    <div id="wrappedScreen" class="hidden min-h-screen p-6 flex items-center justify-center">
+        <div class="max-w-lg w-full">
+            <div class="bg-gradient-to-br from-purple-700 to-pink-600 rounded-2xl shadow-2xl p-10 text-white min-h-[600px] flex flex-col justify-between">
+                <div>
+                    <div class="text-center mb-8">
+                        <h2 id="slideTitle" class="text-3xl font-bold mb-2"></h2>
+                        <p id="slideSubtitle" class="text-lg opacity-90"></p>
+                    </div>
+                    <div id="slideContent" class="mt-12"></div>
+                </div>
+
+                <div class="flex justify-between items-center mt-8">
+                    <button onclick="previousSlide()" id="backBtn" class="px-6 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                        Back
+                    </button>
+                    <div id="dots" class="flex gap-2"></div>
+                    <button onclick="nextSlide()" id="nextBtn" class="px-6 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-all">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var chats = [];
+        var currentSlide = 0;
+        var totalHours = 0;
+        var totalMessages = 0;
+        var topChat = {};
+
+        function initInputs() {
+            var container = document.getElementById('chatInputs');
+            for (var i = 0; i < 5; i++) {
+                var div = document.createElement('div');
+                div.className = 'flex gap-3';
+                div.innerHTML = '<div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-bold text-lg">' + (i + 1) + '</div>' +
+                    '<input type="text" id="name' + i + '" placeholder="Group name (e.g., Study Group, Floor Chat)" class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none text-gray-800" />' +
+                    '<input type="number" id="hours' + i + '" placeholder="Hours" class="w-28 px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none text-gray-800" />';
+                container.appendChild(div);
+            }
+        }
+
+        function generateWrapped() {
+            chats = [];
+            for (var i = 0; i < 5; i++) {
+                var name = document.getElementById('name' + i).value;
+                var hours = parseFloat(document.getElementById('hours' + i).value) || 0;
+                if (name && hours > 0) {
+                    chats.push({ name: name, hours: hours });
+                }
+            }
+
+            if (chats.length === 0) {
+                alert('Please enter at least one group with hours!');
+                return;
+            }
+
+            totalHours = 0;
+            for (var i = 0; i < chats.length; i++) {
+                totalHours += chats[i].hours;
+            }
+            
+            totalMessages = Math.round(totalHours * 42);
+            topChat = chats[0];
+            for (var i = 1; i < chats.length; i++) {
+                if (chats[i].hours > topChat.hours) {
+                    topChat = chats[i];
+                }
+            }
+
+            document.getElementById('inputScreen').classList.add('hidden');
+            document.getElementById('wrappedScreen').classList.remove('hidden');
+            
+            createDots();
+            showSlide(0);
+        }
+
+        function createDots() {
+            var dotsContainer = document.getElementById('dots');
+            dotsContainer.innerHTML = '';
+            for (var i = 0; i < 5; i++) {
+                var dot = document.createElement('div');
+                dot.className = i === 0 ? 'w-6 h-2 rounded-full bg-white transition-all' : 'w-2 h-2 rounded-full bg-white/40 transition-all';
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            var dots = document.getElementById('dots').children;
+            for (var i = 0; i < dots.length; i++) {
+                dots[i].className = i === currentSlide 
+                    ? 'w-6 h-2 rounded-full bg-white transition-all' 
+                    : 'w-2 h-2 rounded-full bg-white/40 transition-all';
+            }
+        }
+
+        function showSlide(index) {
+            currentSlide = index;
+            updateDots();
+
+            var backBtn = document.getElementById('backBtn');
+            var nextBtn = document.getElementById('nextBtn');
+            
+            backBtn.disabled = currentSlide === 0;
+            
+            if (currentSlide === 4) {
+                nextBtn.textContent = 'Start Over';
+                nextBtn.className = 'px-6 py-2 bg-white text-purple-600 rounded-lg hover:bg-white/90 transition-all font-bold';
+            } else {
+                nextBtn.textContent = 'Next';
+                nextBtn.className = 'px-6 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-all';
+            }
+
+            var slides = getSlides();
+            document.getElementById('slideTitle').textContent = slides[index].title;
+            document.getElementById('slideSubtitle').textContent = slides[index].subtitle;
+            document.getElementById('slideContent').innerHTML = slides[index].content;
+        }
+
+        function getSlides() {
+            var topChatPercentage = totalHours > 0 ? ((topChat.hours / totalHours) * 100).toFixed(0) : 0;
+            
+            var chatsHtml = '';
+            for (var i = 0; i < chats.length; i++) {
+                chatsHtml += '<div class="bg-white/10 rounded-lg p-4 backdrop-blur-sm">' +
+                    '<div class="flex justify-between items-center">' +
+                    '<div class="flex items-center gap-3">' +
+                    '<span class="text-2xl font-bold text-white/60">#' + (i + 1) + '</span>' +
+                    '<span class="text-lg font-medium">' + chats[i].name + '</span>' +
+                    '</div>' +
+                    '<span class="text-xl font-bold">' + chats[i].hours.toFixed(0) + 'h</span>' +
+                    '</div>' +
+                    '</div>';
+            }
+            
+            return [
+                {
+                    title: "Your Campus Wrapped",
+                    subtitle: "2024",
+                    content: '<div class="text-center space-y-6">' +
+                        '<div class="text-6xl mb-4">📱</div>' +
+                        '<p class="text-xl opacity-90">You spent <span class="font-bold text-2xl">' + totalHours.toFixed(0) + '</span> hours</p>' +
+                        '<p class="text-lg opacity-80">connecting with friends on campus</p>' +
+                        '</div>'
+                },
+                {
+                    title: "Your Top 5",
+                    subtitle: "Most Active Groups",
+                    content: '<div class="space-y-3">' + chatsHtml + '</div>'
+                },
+                {
+                    title: "Your #1 Group",
+                    subtitle: topChat.name,
+                    content: '<div class="text-center space-y-8">' +
+                        '<div class="text-7xl mb-4">👑</div>' +
+                        '<div class="space-y-4">' +
+                        '<p class="text-5xl font-bold">' + topChat.hours.toFixed(0) + ' hours</p>' +
+                        '<p class="text-xl opacity-90">That\'s <span class="font-bold">' + topChatPercentage + '%</span> of your messaging time</p>' +
+                        '<p class="text-lg opacity-75 mt-6">You could have watched ' + Math.floor(topChat.hours / 2) + ' movies instead</p>' +
+                        '</div>' +
+                        '</div>'
+                },
+                {
+                    title: "Message Mayhem",
+                    subtitle: "Your Activity Stats",
+                    content: '<div class="space-y-6">' +
+                        '<div class="bg-white/10 rounded-xl p-6 backdrop-blur-sm">' +
+                        '<div class="flex items-center justify-between">' +
+                        '<div class="flex items-center gap-3">' +
+                        '<span class="text-2xl">💬</span>' +
+                        '<span class="text-lg">Estimated Messages</span>' +
+                        '</div>' +
+                        '<span class="text-3xl font-bold">' + totalMessages.toLocaleString() + '</span>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="bg-white/10 rounded-xl p-6 backdrop-blur-sm">' +
+                        '<div class="flex items-center justify-between">' +
+                        '<div class="flex items-center gap-3">' +
+                        '<span class="text-2xl">⏰</span>' +
+                        '<span class="text-lg">Avg. Daily Time</span>' +
+                        '</div>' +
+                        '<span class="text-3xl font-bold">' + (totalHours / 365).toFixed(1) + 'h</span>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="bg-white/10 rounded-xl p-6 backdrop-blur-sm">' +
+                        '<div class="flex items-center justify-between">' +
+                        '<div class="flex items-center gap-3">' +
+                        '<span class="text-2xl">📈</span>' +
+                        '<span class="text-lg">Peak Hours</span>' +
+                        '</div>' +
+                        '<span class="text-3xl font-bold">9PM-1AM</span>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>'
+                },
+                {
+                    title: "You're a Social Butterfly",
+                    subtitle: "Campus Connection Master",
+                    content: '<div class="text-center space-y-6">' +
+                        '<div class="text-7xl mb-4">🦋</div>' +
+                        '<p class="text-2xl font-bold mb-4">Achievement Unlocked!</p>' +
+                        '<div class="bg-white/10 rounded-xl p-6 backdrop-blur-sm space-y-3">' +
+                        '<p class="text-lg opacity-90">You spent ' + totalHours.toFixed(0) + ' hours staying connected</p>' +
+                        '<p class="text-lg opacity-90">Sent ~' + totalMessages.toLocaleString() + ' messages</p>' +
+                        '<p class="text-lg opacity-90">Used ' + chats.length + ' groups</p>' +
+                        '</div>' +
+                        '<p class="text-base opacity-75 mt-6">Keep spreading those good vibes! ✨</p>' +
+                        '</div>'
+                }
+            ];
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < 4) {
+                showSlide(currentSlide + 1);
+            } else {
+                document.getElementById('wrappedScreen').classList.add('hidden');
+                document.getElementById('inputScreen').classList.remove('hidden');
+                currentSlide = 0;
+                for (var i = 0; i < 5; i++) {
+                    document.getElementById('name' + i).value = '';
+                    document.getElementById('hours' + i).value = '';
+                }
+            }
+        }
+
+        initInputs();
+    </script>
+</body>
+</html>
