@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campus Wrapped 2024</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body {
             font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
@@ -22,8 +23,10 @@
             text-transform: uppercase;
             font-weight: 900;
             letter-spacing: 2px;
-            transform: rotate(-8deg);
+            transform: rotate(-5deg);
             text-shadow: 2px 2px 0px white, 4px 4px 0px #003366;
+            display: inline-block;
+            margin: 0 20px;
         }
         .card-border {
             border: 6px solid #003366;
@@ -50,6 +53,15 @@
             transform: translate(2px, 2px);
             box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
         }
+        .btn-share {
+            background: #10b981;
+            border: 3px solid #059669;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.3);
+        }
+        .btn-share:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
+        }
         .number-display {
             font-family: 'Impact', sans-serif;
             font-weight: 900;
@@ -60,11 +72,10 @@
             font-size: 2.5rem;
         }
         
-        /* Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(40px);
             }
             to {
                 opacity: 1;
@@ -73,11 +84,14 @@
         }
         
         @keyframes scaleIn {
-            from {
+            0% {
                 opacity: 0;
-                transform: scale(0.8);
+                transform: scale(0.5);
             }
-            to {
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
                 opacity: 1;
                 transform: scale(1);
             }
@@ -86,11 +100,92 @@
         @keyframes slideInLeft {
             from {
                 opacity: 0;
-                transform: translateX(-50px);
+                transform: translateX(-100px);
             }
             to {
                 opacity: 1;
                 transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        @keyframes wiggle {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(-5deg);
+            }
+            75% {
+                transform: rotate(5deg);
+            }
+        }
+        
+        @keyframes flipIn {
+            from {
+                opacity: 0;
+                transform: rotateY(90deg);
+            }
+            to {
+                opacity: 1;
+                transform: rotateY(0deg);
+            }
+        }
+        
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
             }
         }
         
@@ -99,11 +194,43 @@
         }
         
         .animate-scale-in {
-            animation: scaleIn 0.8s ease-out forwards;
+            animation: scaleIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
         
         .animate-slide-in-left {
-            animation: slideInLeft 0.5s ease-out forwards;
+            animation: slideInLeft 0.6s ease-out forwards;
+        }
+        
+        .animate-slide-in-right {
+            animation: slideInRight 0.6s ease-out forwards;
+        }
+        
+        .animate-bounce {
+            animation: bounce 1s ease-in-out 2;
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .animate-wiggle {
+            animation: wiggle 0.5s ease-in-out 3;
+        }
+        
+        .animate-flip-in {
+            animation: flipIn 0.8s ease-out forwards;
+        }
+        
+        .animate-count-up {
+            animation: countUp 1s ease-out forwards;
+        }
+        
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .animate-rotate {
+            animation: rotate 1s ease-out forwards;
         }
         
         .stagger-1 { animation-delay: 0.1s; opacity: 0; }
@@ -111,6 +238,8 @@
         .stagger-3 { animation-delay: 0.3s; opacity: 0; }
         .stagger-4 { animation-delay: 0.4s; opacity: 0; }
         .stagger-5 { animation-delay: 0.5s; opacity: 0; }
+        .stagger-6 { animation-delay: 0.6s; opacity: 0; }
+        .stagger-7 { animation-delay: 0.7s; opacity: 0; }
     </style>
 </head>
 <body class="h-screen flex items-center justify-center p-4">
@@ -118,7 +247,7 @@
     <div id="inputScreen" class="w-full max-w-4xl">
         <div class="bg-white card-border rounded-3xl p-6 max-h-[90vh] overflow-y-auto">
             <div class="text-center mb-6">
-                <h1 class="text-4xl md:text-5xl wrapped-text mb-4">Wrapped</h1>
+                <h1 class="text-4xl md:text-5xl wrapped-text mb-4">Campus Wrapped</h1>
                 <h2 class="text-2xl md:text-3xl font-black text-gray-800 uppercase mb-2">2024</h2>
                 <p class="text-lg font-bold text-gray-700 uppercase">Enter Your Top 5 Groups</p>
             </div>
@@ -132,25 +261,40 @@
     </div>
 
     <div id="wrappedScreen" class="hidden w-full max-w-5xl h-[90vh]">
-        <div class="bg-white card-border rounded-3xl p-6 md:p-10 h-full flex flex-col justify-between">
-            <div class="flex-1 flex flex-col justify-center">
-                <div class="text-center mb-6">
-                    <h1 class="text-3xl md:text-5xl wrapped-text mb-3 animate-fade-in-up">Wrapped</h1>
-                    <h2 id="slideTitle" class="text-2xl md:text-4xl font-black text-gray-800 uppercase mb-1 animate-fade-in-up stagger-1"></h2>
-                    <p id="slideSubtitle" class="text-lg md:text-xl font-bold text-gray-600 uppercase animate-fade-in-up stagger-2"></p>
+        <div class="bg-white card-border rounded-3xl p-6 md:p-10 h-full flex flex-col">
+            <div class="flex-1 flex flex-col justify-center min-h-0">
+                <div class="text-center mb-4">
+                    <h1 class="text-3xl md:text-5xl wrapped-text mb-3 animate-fade-in-up">Campus Wrapped</h1>
+                    <h2 id="slideTitle" class="text-2xl md:text-4xl font-black text-gray-800 uppercase mb-1"></h2>
+                    <p id="slideSubtitle" class="text-lg md:text-xl font-bold text-gray-600 uppercase"></p>
                 </div>
-                <div id="slideContent" class="overflow-y-auto max-h-[50vh]"></div>
+                <div id="slideContent" class="overflow-y-auto flex-1"></div>
             </div>
 
-            <div class="flex justify-between items-center mt-6">
+            <div class="flex justify-between items-center mt-4 gap-4 flex-shrink-0">
                 <button onclick="previousSlide()" id="backBtn" class="px-6 py-2 bg-gray-200 border-3 border-gray-400 rounded-xl font-black uppercase text-sm hover:bg-gray-300 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
                     Back
                 </button>
-                <div id="dots" class="flex gap-2"></div>
+                <div class="flex items-center gap-3">
+                    <div id="dots" class="flex gap-2"></div>
+                    <button onclick="shareWrapped()" id="shareBtn" class="hidden px-4 py-2 btn-share text-white rounded-xl transition-all text-xs font-black uppercase">
+                        📸 Share
+                    </button>
+                    <button onclick="shareWall()" id="shareWallBtn" class="hidden px-4 py-2 bg-purple-600 border-3 border-purple-700 text-white rounded-xl transition-all text-xs font-black uppercase" style="box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.3);">
+                        🖼️ Wall
+                    </button>
+                </div>
                 <button onclick="nextSlide()" id="nextBtn" class="px-6 py-2 btn-wrapped text-white rounded-xl transition-all text-sm">
                     Next
                 </button>
             </div>
+        </div>
+    </div>
+
+    <div id="shareCanvas" style="position: fixed; left: -9999px; top: -9999px;">
+        <div id="shareContent" style="width: 601px; background: white; padding: 40px; font-family: Arial Black, sans-serif;">
+        </div>
+        <div id="shareWallContent" style="width: 1920px; height: 1080px; background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); padding: 80px; font-family: Arial Black, sans-serif; display: flex; align-items: center; justify-content: center;">
         </div>
     </div>
 
@@ -160,6 +304,7 @@
         var totalHours = 0;
         var totalMessages = 0;
         var topChat = {};
+        var achievement = {};
 
         function initInputs() {
             var container = document.getElementById('chatInputs');
@@ -168,8 +313,74 @@
                 div.className = 'flex gap-3';
                 div.innerHTML = '<div class="w-12 h-12 bg-blue-900 rounded-xl flex items-center justify-center text-white font-black text-xl border-3 border-blue-950">' + (i + 1) + '</div>' +
                     '<input type="text" id="name' + i + '" placeholder="GROUP NAME" class="flex-1 px-4 py-3 input-box rounded-xl text-gray-800 uppercase font-bold placeholder-gray-400 focus:outline-none text-sm" />' +
-                    '<input type="number" id="hours' + i + '" placeholder="HRS" class="w-24 px-4 py-3 input-box rounded-xl text-gray-800 font-black text-center focus:outline-none text-sm" />';
+                    '<input type="number" id="hours' + i + '" placeholder="HOURS" class="w-24 px-4 py-3 input-box rounded-xl text-gray-800 font-black text-center focus:outline-none text-sm" />';
                 container.appendChild(div);
+            }
+        }
+
+        function calculateAchievement() {
+            var avgHoursPerGroup = totalHours / chats.length;
+            
+            if (totalHours >= 1000) {
+                achievement = {
+                    emoji: '🏆',
+                    title: 'Campus Legend',
+                    description: 'Over 1000 hours! You basically live here'
+                };
+            } else if (totalHours >= 500) {
+                achievement = {
+                    emoji: '👑',
+                    title: 'Social Royalty',
+                    description: 'You\'re the glue that holds everyone together'
+                };
+            } else if (totalHours >= 250) {
+                achievement = {
+                    emoji: '🦋',
+                    title: 'Social Butterfly',
+                    description: 'Always fluttering between friend groups'
+                };
+            } else if (totalHours >= 100) {
+                achievement = {
+                    emoji: '⭐',
+                    title: 'Campus Regular',
+                    description: 'You know what\'s up on campus'
+                };
+            } else if (totalHours >= 50) {
+                achievement = {
+                    emoji: '🌱',
+                    title: 'Growing Network',
+                    description: 'Building those connections!'
+                };
+            } else {
+                achievement = {
+                    emoji: '🎯',
+                    title: 'Quality Over Quantity',
+                    description: 'Focused on meaningful connections'
+                };
+            }
+
+            if (chats.length >= 5 && totalHours >= 200) {
+                achievement = {
+                    emoji: '🌟',
+                    title: 'The Connector',
+                    description: 'Master of multiple social circles'
+                };
+            }
+
+            if (topChat.hours / totalHours > 0.7) {
+                achievement = {
+                    emoji: '💎',
+                    title: 'Ride or Die',
+                    description: 'Loyal to your main squad'
+                };
+            }
+
+            if (totalMessages > 10000) {
+                achievement = {
+                    emoji: '💬',
+                    title: 'Message Machine',
+                    description: 'Your thumbs deserve a medal'
+                };
             }
         }
 
@@ -200,6 +411,8 @@
                     topChat = chats[i];
                 }
             }
+
+            calculateAchievement();
 
             document.getElementById('inputScreen').classList.add('hidden');
             document.getElementById('wrappedScreen').classList.remove('hidden');
@@ -233,13 +446,18 @@
 
             var backBtn = document.getElementById('backBtn');
             var nextBtn = document.getElementById('nextBtn');
+            var shareBtn = document.getElementById('shareBtn');
             
             backBtn.disabled = currentSlide === 0;
             
             if (currentSlide === 4) {
                 nextBtn.textContent = 'Start Over';
+                shareBtn.classList.remove('hidden');
+                document.getElementById('shareWallBtn').classList.remove('hidden');
             } else {
                 nextBtn.textContent = 'Next';
+                shareBtn.classList.add('hidden');
+                document.getElementById('shareWallBtn').classList.add('hidden');
             }
 
             var slides = getSlides();
@@ -255,9 +473,149 @@
                 subtitleEl.textContent = slides[index].subtitle;
                 contentEl.innerHTML = slides[index].content;
                 
-                titleEl.className = 'text-2xl md:text-4xl font-black text-gray-800 uppercase mb-1 animate-fade-in-up';
+                titleEl.className = 'text-2xl md:text-4xl font-black text-gray-800 uppercase mb-1 animate-flip-in';
                 subtitleEl.className = 'text-lg md:text-xl font-bold text-gray-600 uppercase animate-fade-in-up stagger-1';
             }, 50);
+        }
+
+        function shareWall() {
+            var shareWallContent = document.getElementById('shareWallContent');
+            var topChatPercentage = totalHours > 0 ? Math.round((topChat.hours / totalHours) * 100) : 0;
+            var totalMinutes = Math.round(totalHours * 60);
+            
+            shareWallContent.innerHTML = '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: repeating-linear-gradient(45deg, #1a1a1a, #1a1a1a 20px, #2a2a2a 20px, #2a2a2a 40px);">' +
+                '<div style="width: 1760px; background: #e5e7eb; border: 12px solid #000000; border-radius: 48px; padding: 60px; box-shadow: 20px 20px 0px rgba(0, 0, 0, 0.5);">' +
+                '<div style="text-align: center; margin-bottom: 40px;">' +
+                '<div style="display: inline-block; transform: rotate(-5deg); margin: 0 40px;">' +
+                '<h1 style="font-size: 72px; color: #003366; font-weight: 900; text-transform: uppercase; text-shadow: 3px 3px 0px #e5e7eb, 6px 6px 0px #003366; letter-spacing: 3px;">Campus Wrapped</h1>' +
+                '</div>' +
+                '<div style="font-size: 48px; font-weight: 900; color: #003366; margin-top: 10px;">2024</div>' +
+                '</div>' +
+                '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; margin-bottom: 40px;">' +
+                '<div style="background: #ffffff; border: 6px solid #000000; border-radius: 20px; padding: 30px; text-align: center; box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);">' +
+                '<div style="font-size: 32px; font-weight: 900; color: #6b7280; margin-bottom: 15px; text-transform: uppercase;">Total Hours</div>' +
+                '<div style="font-size: 72px; font-weight: 900; color: #003366; font-family: Impact, sans-serif;">' + Math.round(totalHours) + '</div>' +
+                '</div>' +
+                '<div style="background: #ffffff; border: 6px solid #000000; border-radius: 20px; padding: 30px; text-align: center; box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);">' +
+                '<div style="font-size: 32px; font-weight: 900; color: #6b7280; margin-bottom: 15px; text-transform: uppercase;">Messages</div>' +
+                '<div style="font-size: 72px; font-weight: 900; color: #003366; font-family: Impact, sans-serif;">~' + totalMessages.toLocaleString() + '</div>' +
+                '</div>' +
+                '<div style="background: #ffffff; border: 6px solid #000000; border-radius: 20px; padding: 30px; text-align: center; box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);">' +
+                '<div style="font-size: 32px; font-weight: 900; color: #6b7280; margin-bottom: 15px; text-transform: uppercase;">Minutes</div>' +
+                '<div style="font-size: 72px; font-weight: 900; color: #003366; font-family: Impact, sans-serif;">' + totalMinutes.toLocaleString() + '</div>' +
+                '</div>' +
+                '<div style="background: #ffffff; border: 6px solid #000000; border-radius: 20px; padding: 30px; text-align: center; box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);">' +
+                '<div style="font-size: 32px; font-weight: 900; color: #6b7280; margin-bottom: 15px; text-transform: uppercase;">Groups</div>' +
+                '<div style="font-size: 72px; font-weight: 900; color: #003366; font-family: Impact, sans-serif;">' + chats.length + '</div>' +
+                '</div>' +
+                '</div>' +
+                '<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">' +
+                '<div style="background: #ffffff; border: 6px solid #000000; border-radius: 20px; padding: 40px; box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);">' +
+                '<div style="font-size: 36px; font-weight: 900; color: #6b7280; margin-bottom: 20px; text-transform: uppercase;">#1 Group</div>' +
+                '<div style="font-size: 64px; font-weight: 900; color: #003366; font-family: Impact, sans-serif; margin-bottom: 20px;">' + topChat.name.toUpperCase() + '</div>' +
+                '<div style="display: flex; gap: 20px;">' +
+                '<div style="flex: 1; text-align: center;">' +
+                '<div style="font-size: 48px; font-weight: 900; color: #003366; font-family: Impact, sans-serif;">' + Math.round(topChat.hours) + 'H</div>' +
+                '<div style="font-size: 20px; font-weight: 900; color: #6b7280;">TIME SPENT</div>' +
+                '</div>' +
+                '<div style="flex: 1; text-align: center;">' +
+                '<div style="font-size: 48px; font-weight: 900; color: #003366; font-family: Impact, sans-serif;">' + topChatPercentage + '%</div>' +
+                '<div style="font-size: 20px; font-weight: 900; color: #6b7280;">OF TOTAL</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '<div style="background: #ffffff; border: 6px solid #000000; border-radius: 20px; padding: 40px; text-align: center; display: flex; flex-direction: column; justify-content: center; box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);">' +
+                '<div style="font-size: 80px; margin-bottom: 15px;">' + achievement.emoji + '</div>' +
+                '<div style="font-size: 32px; font-weight: 900; color: #003366; text-transform: uppercase; line-height: 1.2;">' + achievement.title + '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+
+            html2canvas(document.getElementById('shareWallContent'), {
+                backgroundColor: null,
+                scale: 1,
+                width: 1920,
+                height: 1080,
+                logging: false
+            }).then(function(canvas) {
+                var url = canvas.toDataURL('image/png');
+                var link = document.createElement('a');
+                link.download = 'campus-wrapped-2024-wall.png';
+                link.href = url;
+                link.click();
+                alert('📥 Wall image downloaded! Perfect for sharing or as your wallpaper!');
+            });
+        }
+
+        function shareWrapped() {
+            var shareContent = document.getElementById('shareContent');
+            shareContent.innerHTML = '<div style="border: 6px solid #003366; border-radius: 24px; padding: 30px; background: white;">' +
+                '<div style="text-align: center; margin-bottom: 20px;">' +
+                '<h1 style="font-size: 32px; color: #003366; font-weight: 900; margin-bottom: 10px; text-transform: uppercase;">CAMPUS WRAPPED 2024</h1>' +
+                '</div>' +
+                '<div style="background: #f3f4f6; border: 4px solid #003366; border-radius: 16px; padding: 20px; margin-bottom: 15px;">' +
+                '<div style="display: flex; justify-content: space-between; align-items: center;">' +
+                '<div><span style="font-size: 20px; font-weight: 900; color: #003366;">TOTAL HOURS</span></div>' +
+                '<div><span style="font-size: 36px; font-weight: 900; color: #003366;">' + Math.round(totalHours) + '</span></div>' +
+                '</div>' +
+                '</div>' +
+                '<div style="background: #f3f4f6; border: 4px solid #003366; border-radius: 16px; padding: 20px; margin-bottom: 15px;">' +
+                '<div style="display: flex; justify-content: space-between; align-items: center;">' +
+                '<div><span style="font-size: 20px; font-weight: 900; color: #003366;">#1 GROUP</span></div>' +
+                '<div style="text-align: right;"><span style="font-size: 24px; font-weight: 900; color: #003366;">' + topChat.name.toUpperCase() + '</span></div>' +
+                '</div>' +
+                '</div>' +
+                '<div style="background: #f3f4f6; border: 4px solid #003366; border-radius: 16px; padding: 20px; text-align: center;">' +
+                '<div style="font-size: 48px; margin-bottom: 10px;">' + achievement.emoji + '</div>' +
+                '<div style="font-size: 24px; font-weight: 900; color: #003366; margin-bottom: 5px;">' + achievement.title.toUpperCase() + '</div>' +
+                '<div style="font-size: 14px; font-weight: 700; color: #6b7280;">' + achievement.description + '</div>' +
+                '</div>' +
+                '</div>';
+
+            html2canvas(document.getElementById('shareContent'), {
+                backgroundColor: '#ffffff',
+                scale: 1.5,
+                width: 601,
+                height: 601,
+                logging: false
+            }).then(function(canvas) {
+                var tempCanvas = document.createElement('canvas');
+                tempCanvas.width = 600;
+                tempCanvas.height = 600;
+                var ctx = tempCanvas.getContext('2d');
+                ctx.drawImage(canvas, 0, 0, 600, 600);
+                
+                tempCanvas.toBlob(function(blob) {
+                    if (blob.size > 150000) {
+                        tempCanvas.toBlob(function(blob2) {
+                            var item = new ClipboardItem({ 'image/png': blob2 });
+                            navigator.clipboard.write([item]).then(function() {
+                                alert('✅ Image copied to clipboard! Paste it anywhere to share your Campus Wrapped!');
+                            }).catch(function() {
+                                var url = tempCanvas.toDataURL('image/png', 0.6);
+                                var link = document.createElement('a');
+                                link.download = 'campus-wrapped-2024.png';
+                                link.href = url;
+                                link.click();
+                                alert('📥 Image downloaded! Share your Campus Wrapped!');
+                            });
+                        }, 'image/png', 0.6);
+                    } else {
+                        var item = new ClipboardItem({ 'image/png': blob });
+                        navigator.clipboard.write([item]).then(function() {
+                            alert('✅ Image copied to clipboard! Paste it anywhere to share your Campus Wrapped!');
+                        }).catch(function() {
+                            var url = tempCanvas.toDataURL('image/png');
+                            var link = document.createElement('a');
+                            link.download = 'campus-wrapped-2024.png';
+                            link.href = url;
+                            link.click();
+                            alert('📥 Image downloaded! Share your Campus Wrapped!');
+                        });
+                    }
+                }, 'image/png', 0.8);
+            });
         }
 
         function getSlides() {
@@ -282,12 +640,12 @@
                     title: "Your Year",
                     subtitle: "In Messages",
                     content: '<div class="text-center space-y-6">' +
-                        '<div class="sparkle animate-scale-in">💬</div>' +
-                        '<div class="stat-box rounded-3xl p-8 inline-block animate-scale-in stagger-1">' +
-                        '<p class="text-xl font-black text-gray-600 uppercase mb-2">Total Hours</p>' +
-                        '<p class="text-6xl md:text-7xl font-black number-display">' + Math.round(totalHours) + '</p>' +
+                        '<div class="sparkle animate-bounce">💬</div>' +
+                        '<div class="stat-box rounded-3xl p-8 inline-block animate-scale-in stagger-2">' +
+                        '<p class="text-xl font-black text-gray-600 uppercase mb-2 animate-fade-in-up stagger-3">Total Hours</p>' +
+                        '<p class="text-6xl md:text-7xl font-black number-display animate-count-up stagger-4">' + Math.round(totalHours) + '</p>' +
                         '</div>' +
-                        '<p class="text-lg font-bold text-gray-700 uppercase animate-fade-in-up stagger-2">Hours Connecting On Campus</p>' +
+                        '<p class="text-lg font-bold text-gray-700 uppercase animate-fade-in-up stagger-5">Hours Connecting On Campus</p>' +
                         '</div>'
                 },
                 {
@@ -299,18 +657,18 @@
                     title: "Number 1",
                     subtitle: topChat.name.toUpperCase(),
                     content: '<div class="text-center space-y-6">' +
-                        '<div class="sparkle animate-scale-in">👑</div>' +
-                        '<div class="stat-box rounded-3xl p-8 inline-block mb-4 animate-scale-in stagger-1">' +
-                        '<p class="text-6xl md:text-7xl font-black number-display mb-2">' + Math.round(topChat.hours) + '</p>' +
-                        '<p class="text-2xl font-black text-gray-600 uppercase">Hours</p>' +
+                        '<div class="sparkle animate-wiggle">👑</div>' +
+                        '<div class="stat-box rounded-3xl p-8 inline-block mb-4 animate-scale-in stagger-2">' +
+                        '<p class="text-6xl md:text-7xl font-black number-display mb-2 animate-count-up stagger-3">' + Math.round(topChat.hours) + '</p>' +
+                        '<p class="text-2xl font-black text-gray-600 uppercase animate-fade-in-up stagger-4">Hours</p>' +
                         '</div>' +
                         '<div class="grid grid-cols-2 gap-4 max-w-xl mx-auto">' +
-                        '<div class="stat-box rounded-xl p-4 animate-fade-in-up stagger-2">' +
-                        '<p class="text-4xl font-black number-display">' + topChatPercentage + '%</p>' +
+                        '<div class="stat-box rounded-xl p-4 animate-slide-in-left stagger-5">' +
+                        '<p class="text-4xl font-black number-display animate-count-up stagger-6">' + topChatPercentage + '%</p>' +
                         '<p class="text-sm font-bold text-gray-600 uppercase mt-1">Of Your Time</p>' +
                         '</div>' +
-                        '<div class="stat-box rounded-xl p-4 animate-fade-in-up stagger-3">' +
-                        '<p class="text-4xl font-black number-display">' + Math.floor(topChat.hours / 2) + '</p>' +
+                        '<div class="stat-box rounded-xl p-4 animate-slide-in-right stagger-5">' +
+                        '<p class="text-4xl font-black number-display animate-count-up stagger-6">' + Math.floor(topChat.hours / 2) + '</p>' +
                         '<p class="text-sm font-bold text-gray-600 uppercase mt-1">Movies Worth</p>' +
                         '</div>' +
                         '</div>' +
@@ -320,37 +678,38 @@
                     title: "By The Numbers",
                     subtitle: "Your Stats",
                     content: '<div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">' +
-                        '<div class="stat-box rounded-xl p-6 text-center animate-scale-in stagger-1">' +
-                        '<div class="text-4xl mb-2">💬</div>' +
-                        '<p class="text-3xl font-black number-display mb-1">~' + totalMessages.toLocaleString() + '</p>' +
+                        '<div class="stat-box rounded-xl p-6 text-center animate-flip-in stagger-1">' +
+                        '<div class="text-4xl mb-2 animate-float">💬</div>' +
+                        '<p class="text-3xl font-black number-display mb-1 animate-count-up stagger-2">~' + totalMessages.toLocaleString() + '</p>' +
                         '<p class="text-sm font-bold text-gray-600 uppercase">Messages</p>' +
                         '</div>' +
-                        '<div class="stat-box rounded-xl p-6 text-center animate-scale-in stagger-2">' +
-                        '<div class="text-4xl mb-2">⏰</div>' +
-                        '<p class="text-3xl font-black number-display mb-1">' + totalMinutes.toLocaleString() + '</p>' +
+                        '<div class="stat-box rounded-xl p-6 text-center animate-flip-in stagger-2">' +
+                        '<div class="text-4xl mb-2 animate-float">⏰</div>' +
+                        '<p class="text-3xl font-black number-display mb-1 animate-count-up stagger-3">' + totalMinutes.toLocaleString() + '</p>' +
                         '<p class="text-sm font-bold text-gray-600 uppercase">Minutes Yapped</p>' +
                         '</div>' +
-                        '<div class="stat-box rounded-xl p-6 text-center animate-scale-in stagger-3">' +
-                        '<div class="text-4xl mb-2">🌙</div>' +
-                        '<p class="text-3xl font-black number-display mb-1">9PM-1AM</p>' +
-                        '<p class="text-sm font-bold text-gray-600 uppercase">Peak Hours</p>' +
+                        '<div class="stat-box rounded-xl p-6 text-center animate-flip-in stagger-3">' +
+                        '<div class="text-4xl mb-2 animate-pulse">🔥</div>' +
+                        '<p class="text-3xl font-black number-display mb-1 animate-fade-in-up stagger-4">Late Night</p>' +
+                        '<p class="text-sm font-bold text-gray-600 uppercase">Energy</p>' +
                         '</div>' +
                         '</div>'
                 },
                 {
-                    title: "Social Butterfly",
+                    title: achievement.title,
                     subtitle: "Achievement Unlocked",
-                    content: '<div class="text-center space-y-6">' +
-                        '<div class="sparkle animate-scale-in">🦋</div>' +
-                        '<div class="stat-box rounded-3xl p-8 max-w-xl mx-auto animate-scale-in stagger-1">' +
-                        '<p class="text-2xl font-black text-gray-800 uppercase mb-4">You Did It!</p>' +
-                        '<div class="space-y-3 text-left">' +
-                        '<p class="text-lg font-bold text-gray-700">✓ <span class="number-display text-xl">' + Math.round(totalHours) + '</span> HOURS CONNECTED</p>' +
-                        '<p class="text-lg font-bold text-gray-700">✓ <span class="number-display text-xl">~' + totalMessages.toLocaleString() + '</span> MESSAGES SENT</p>' +
-                        '<p class="text-lg font-bold text-gray-700">✓ <span class="number-display text-xl">' + chats.length + '</span> GROUPS ACTIVE</p>' +
+                    content: '<div class="text-center space-y-4">' +
+                        '<div class="sparkle animate-rotate" style="font-size: 3rem;">' + achievement.emoji + '</div>' +
+                        '<div class="stat-box rounded-3xl p-6 max-w-xl mx-auto animate-scale-in stagger-2">' +
+                        '<p class="text-xl font-black text-gray-800 uppercase mb-3 animate-bounce stagger-3">' + achievement.title + '</p>' +
+                        '<p class="text-base font-bold text-gray-600 mb-4">' + achievement.description + '</p>' +
+                        '<div class="space-y-2 text-left">' +
+                        '<p class="text-base font-bold text-gray-700 animate-slide-in-left stagger-4">✓ <span class="number-display text-lg">' + Math.round(totalHours) + '</span> HOURS CONNECTED</p>' +
+                        '<p class="text-base font-bold text-gray-700 animate-slide-in-left stagger-5">✓ <span class="number-display text-lg">~' + totalMessages.toLocaleString() + '</span> MESSAGES SENT</p>' +
+                        '<p class="text-base font-bold text-gray-700 animate-slide-in-left stagger-6">✓ <span class="number-display text-lg">' + chats.length + '</span> GROUPS ACTIVE</p>' +
                         '</div>' +
                         '</div>' +
-                        '<p class="text-lg font-bold text-gray-600 uppercase animate-fade-in-up stagger-2">Keep The Vibes Going! ✨</p>' +
+                        '<p class="text-base font-bold text-gray-600 uppercase animate-fade-in-up stagger-7">Keep The Vibes Going! ✨</p>' +
                         '</div>'
                 }
             ];
